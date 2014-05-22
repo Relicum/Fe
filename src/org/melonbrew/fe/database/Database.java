@@ -79,12 +79,17 @@ public abstract class Database {
 
     public abstract void clean();
 
-    public void close() {
-        for (Account account : new HashSet<Account>(cachedAccounts)) {
-            account.save(account.getMoney());
+    public void close()
+    {
+       Iterator<Account> iterator= cachedAccounts.iterator();
+       while(iterator.hasNext())
+       {
+           Account account = iterator.next();
+           account.save(account.getMoney());
+           iterator.remove();
 
-            removeCachedAccount(account);
-        }
+       }
+
     }
 
     public abstract String getName();
@@ -129,7 +134,7 @@ public abstract class Database {
         account.setMoney(money);
 
         if (cacheAccounts()) {
-            Player player = plugin.getServer().getPlayerExact(name);
+            Player player = plugin.getServer().getPlayer(UUID.fromString(uuid));
 
             if (player != null) {
                 cachedAccounts.add(account);
